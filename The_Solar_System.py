@@ -8,6 +8,7 @@ from Planets_Class import Planets
 from random import randrange as rr
 
 scene = canvas(title = "The Solar System")
+"""solar_vel vector is used to make the whole solar system to start off with a stated velocity"""
 solar_vel = vector(0,0,0)
 
 the_sun = Planets(name = "The Sun",  pos = vector(0,0,0),              vel = vector(0,0,0),   mass = 1.989e30,  radius = 6.963e8, colour = color.yellow)
@@ -22,8 +23,10 @@ saturn =  Planets(name = "Saturn",   pos = vector(1.488e12,0,0),       vel = vec
 uranus =  Planets(name = "Uranus",   pos = vector(2.955e12,0,0),       vel = vector(0,0,0),   mass = 8.681e25,  radius = 2.536e7, colour = vector(0.7,0.7,1))
 neptune = Planets(name = "Neptune",  pos = vector(4.476e12,0,0),       vel = vector(0,0,0),   mass = 1.024e26,  radius = 2.462e7, colour = color.blue)
 
+"""It is possible to add different planetary bodies into the sim to see how everything will interact with it.
+setting in_solar_system = False will introduce the body as stated otherwise the body will be given an initial tangential velocity to keep it in orbit around the sun"""
 #blackhole = Planets(name = "Blackhole", pos = vector(0,-6e12,-5e13),        vel = vector(0,0,3e4),   mass = 7e30,    radius = the_sun.radius["m"]*2, colour = vector(1,1,1), in_solar_system = False)
-comet = Planets(name = "Comet", pos = vector(-5e8,-2e10,0),             vel = vector(2e2,0,0), mass = 3e3, radius = 2e6, colour = vector(1,1,1))
+#comet = Planets(name = "Comet", pos = vector(-5e8,-2e10,0),             vel = vector(2e2,0,0), mass = 3e3, radius = 2e6, colour = vector(1,1,1))
 
 for name in Planets.planetary_bodies:
     planet = Planets.planetary_bodies[name]
@@ -34,31 +37,14 @@ for name in Planets.planetary_bodies:
             
         planet.vel += solar_vel
     
-
+"""Set the rate of the simulation, if rate is set at 1 then each second 1*dt will pass, if set to 100 then 100*dt will pass each second"""
 rate(10)
 
 t, dt = 0, time_converter(0, hours = 1)
 increased_mass = False
 while t < time_converter(0, centuries = 10):
-    scene.camera.follow(earth.sphere)
     for name in Planets.planetary_bodies:
         planet = Planets.planetary_bodies[name]
         planet.motion(scene.camera.pos, dt)
-        if name != "The Sun":
-            if round(planet.pos["m"].x) == 0:
-                planet.quarter_orbit = True
-            if planet.quarter_orbit and round(planet.pos["m"].x) == planet.initPos.x:
-                print("%s has made a full orbit in %s\nOr %s\m"%(name,t,time_converter(t)))
-                planet.quarter_orbit = False
-
-    if t < time_converter(0,years = 4):
-        comet.pos["m"] = vector(-5e8,-2e10,0)
-        
-    """
-    if t % 0.5 == 0:    
-        print("sun mass = %s, mass lost = %s\ngrav on earth from sun = %s\n\n"%(the_sun.mass, 1.989e30 - the_sun.mass, mag(earth.a_grav(the_sun))))
-    """   
-    if t == time_converter(0, years = 1):
-        print("earth coords = %s, distance from sun = %s\n"%(mag(earth.pos["m"]), earth.pos["m"]))
     
     t += dt
